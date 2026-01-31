@@ -156,10 +156,11 @@ impl TextTransformer for WhitespaceTransformer {
             return Err(Box::new(NoContentInString));
         }
 
-        Ok(transformed.to_string())
+        Ok(text.to_string())
+    }
 }
 
-enum case {
+enum Case {
     Uppercase,
     Lowercase,
 }
@@ -175,6 +176,18 @@ impl TextTransformer for CaseTransformer {
             Case::Lowercase => Ok(text.to_lowercase()),
         }
     }
+}
+
+fn apply_transformations(text:String, pipeline: Vec<Box<dyn TextTransformer>>) -> String {
+    pipeline.into_iter().fold(text, |accumulator, transformer| {
+        match transformer.transform(&accumulator) {
+            Ok(new_value) => new_value,
+            Err(e) => {
+                println!("Something went wrong: {}", e);
+                accumulator
+            }
+        }
+    })
 }
 
 fn main() {
