@@ -159,6 +159,24 @@ impl TextTransformer for WhitespaceTransformer {
         Ok(transformed.to_string())
 }
 
+enum case {
+    Uppercase,
+    Lowercase,
+}
+
+struct CaseTransformer {
+    case: Case,
+}
+
+impl TextTransformer for CaseTransformer {
+    fn transform(&self, text: &str) -> Result<String, Box<dyn Error>> {
+        match self.case {
+            Case::Uppercase => Ok(text.to_uppercase()),
+            Case::Lowercase => Ok(text.to_lowercase()),
+        }
+    }
+}
+
 fn main() {
     // Input
     let text = String::from("  homer simpson  ");
